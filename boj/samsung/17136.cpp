@@ -9,7 +9,7 @@
 
 using namespace std;
 
-int map[MAP_SIZE][MAP_SIZE];
+int origin[MAP_SIZE][MAP_SIZE];
 bool is_covered[MAP_SIZE][MAP_SIZE];
 int remain[PAPER_COUNT+1] = {0, 5, 5, 5, 5, 5};
 vector<pair<int, int> > required;
@@ -25,7 +25,7 @@ bool is_possible(int y, int x, int len) {
     {
         for (int j = x; j < x + len; j++)
         {
-            if(map[i][j] == 0 || is_covered[i][j]) return false;
+            if(origin[i][j] == 0 || is_covered[i][j]) return false;
         }
     }
 
@@ -75,8 +75,8 @@ int main() {
     {
         for (int j = 0; j < MAP_SIZE; j++)
         {
-            cin >> map[i][j];
-            if(map[i][j]) required.push_back(make_pair(i, j));
+            cin >> origin[i][j];
+            if(origin[i][j]) required.push_back(make_pair(i, j));
         }
     }
 
