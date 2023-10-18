@@ -10,7 +10,7 @@ using namespace std;
 
 int n;
 
-vector<int> v;
+vector<int> vec;
 unordered_set<int> set;
 
 int main() {
@@ -21,18 +21,18 @@ int main() {
     for (int i = 0; i < n; i++)
     {
         cin >> val;
-        v.push_back(val);
+        vec.push_back(val);
     }
 
-    sort(v.begin(), v.end());
+    sort(vec.begin(), vec.end());
 
-    for (int i = 0; i < v.size(); i++)
+    for (int i = 0; i < vec.size(); i++)
     {
-        for (int j = i; j < v.size(); j++)
+        for (int j = i; j < vec.size(); j++)
         {
-            val = v[i] + v[j];
+            val = vec[i] + vec[j];
 
-            if(val >= v.back()) break;
+            if(val >= vec.back()) break;
 
             set.insert(val);
         }
@@ -51,13 +51,13 @@ int main() {
     // }
 
     int ans = -1;
-    for (int i = v.size()-1; i >= 0; i--)
+    for (int i = vec.size()-1; i >= 0; i--)
     {
         for (int j = 0; j < i; j++)
         {
-            if(set.find(v[i] - v[j]) != set.end()) 
+            if(set.find(vec[i] - vec[j]) != set.end()) 
             {
-                ans = v[i];
+                ans = vec[i];
                 break;
             }
         }
