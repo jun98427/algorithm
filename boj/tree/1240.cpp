@@ -3,32 +3,65 @@
 #include <tuple>
 
 #define MAX_N 1000
-#define MAX_H 20
+#define MAX_H 30
 
 using namespace std;
 
 vector<pair<int, int> > edge[MAX_N+1];
-int sparse_table[MAX_H][MAX_N+1];
+bool is_visited[MAX_N+1];
+int parent[MAX_H][MAX_N+1];
 int dist[MAX_N+1];
+int depth[MAX_N+1];
 
 int n, m;
 
-void DFS(int cur, int p) {
-    sparse_table[0][cur] = p;
+void DFS(int cur) {
 
     int next, d;
     for(auto it : edge[cur])
     {
         tie(next, d) = it;
         
-        if(next == p) continue;
+        if(is_visited[next]) continue;
 
+        is_visited[next] = true;
         dist[next] = dist[cur] + d;
-        DFS(next, cur);
+        depth[next] = depth[cur] + 1;
+        parent[0][next] = cur;
+        
+        DFS(next);
     }
 }
 
+int get_parent(int a, int b) {
+    if(depth[a] < depth[b]) {
+        int t = a;
+        a = b;
+        b = t;
+    }
+
+    for (int i = MAX_H-1; i >= 0; i--)
+    {
+        if(depth[a] - depth[b] >= (1 << i)) {
+            a = parent[i][a];
+        }
+    }
+    
+    if(a == b) return a;
+
+    for (int i = MAX_H-1; i >= 0; i--)
+    {
+        if(parent[i][a] != parent[i][b]) {
+            a = parent[i][a];
+            b = parent[i][b];
+        }
+    }
+    
+    return parent[0][a];
+}
+
 int main() {
+    // freopen("input.txt", "r" , stdin);
     cin >> n >> m;
 
     int n1, n2, d;
@@ -40,9 +73,27 @@ int main() {
         edge[n2].push_back({n1, d});
     }
 
-    DFS(1, 0);
+    is_visited[1] = true;
+    depth[1] = 1;
+    DFS(1);
     
+    for (int h = 1; h < MAX_H; h++)
+    {
+        for (int i = 1; i <= n; i++)
+        {
+            parent[h][i] = parent[h-1][parent[h-1][i]];
+        }
+    }
 
+    while (m--)
+    {
+        cin >> n1 >> n2;
+
+        int p = get_parent(n1, n2);
+        // cout << "p : " << p << "\n";
+
+        cout << dist[n1] + dist[n2] - dist[p] * 2 << "\n";
+    }
 
     return 0;
 }
