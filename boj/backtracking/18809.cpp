@@ -15,7 +15,7 @@ int map[50][50];
 int is_visited[50][50];
 
 vector<pair<int, int> > at;
-vector<pair<int, int> >chosed;
+vector<tuple<int, int, int> >chosed;
 int N, M, R, G;
 int ans;
 
@@ -34,13 +34,10 @@ void solve() {
 
     for (int i = 0; i < R+G; i++)
     {
-        tie(val, idx) = chosed[i];
-        tie(r, c) = at[idx];
-
-        // cout << "val : " << val << " r : " << r << " c : " << c << endl;
+        tie(val, r, c) = chosed[i];
 
         is_visited[r][c] = val;
-        que.push({val, r, c});
+        que.push(chosed[i]);
     }
 
     while (!que.empty())
@@ -84,28 +81,25 @@ void permutation(int idx, int r_remain, int g_remain) {
 
     if(idx == at.size()) return ;
 
-    for (int i = idx; i < (int)at.size(); i++)
-    {
-        if(r_remain >= 0) {
-            chosed.push_back({-1, i});
-            permutation(i+1, r_remain-1, g_remain);
-            chosed.pop_back();
-        }
-
-        if(g_remain >= 0) {
-            chosed.push_back({1, i});
-            permutation(i+1, r_remain, g_remain-1);
-            chosed.pop_back();
-        }
-
-        permutation(i+1, r_remain, g_remain);
+    if(r_remain >= 0) {
+        chosed.push_back({-1, at[idx].first, at[idx].second});
+        permutation(idx+1, r_remain-1, g_remain);
+        chosed.pop_back();
     }
+
+    if(g_remain >= 0) {
+        chosed.push_back({1, at[idx].first, at[idx].second});
+        permutation(idx+1, r_remain, g_remain-1);
+        chosed.pop_back();
+    }
+
+    permutation(idx+1, r_remain, g_remain);
 }
 
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
-    freopen("input.txt", "r", stdin);
+    // freopen("input.txt", "r", stdin);
     cin >> N >> M >> R >> G;
 
     for (int i = 0; i < N; i++)
